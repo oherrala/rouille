@@ -16,8 +16,8 @@ use std::fmt;
 use serde;
 use serde_json;
 use percent_encoding;
-use Request;
-use Upgrade;
+use crate::Request;
+use crate::Upgrade;
 
 /// Contains a prototype of a response.
 ///
@@ -792,7 +792,7 @@ impl ResponseBody {
 
 #[cfg(test)]
 mod tests {
-    use Response;
+    use crate::Response;
 
     #[test]
     fn unique_header_adds() {

@@ -40,9 +40,9 @@ use rand;
 use rand::Rng;
 use rand::distributions::Alphanumeric;
 
-use Request;
-use Response;
-use input;
+use crate::Request;
+use crate::Response;
+use crate::input;
 
 pub fn session<'r, F>(request: &'r Request, cookie_name: &str, timeout_s: u64, inner: F) -> Response
     where F: FnOnce(&Session<'r>) -> Response

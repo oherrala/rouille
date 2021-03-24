@@ -8,17 +8,17 @@
 // according to those terms.
 
 //! Allows you to let an external process handle the request through CGI.
-//! 
+//!
 //! This module provides a trait named `CgiRun` which is implemented on `std::process::Command`.
 //! In order to dispatch a request, simply start building a `Command` object and call `start_cgi`
 //! on it.
-//! 
+//!
 //! ## Example
-//! 
+//!
 //! ```no_run
 //! use std::process::Command;
 //! use rouille::cgi::CgiRun;
-//! 
+//!
 //! rouille::start_server("localhost:8080", move |request| {
 //!     Command::new("php-cgi").start_cgi(request).unwrap()
 //! });
@@ -46,9 +46,9 @@ use std::io::Read;
 use std::process::Command;
 use std::process::Stdio;
 
-use Request;
-use Response;
-use ResponseBody;
+use crate::Request;
+use crate::Response;
+use crate::ResponseBody;
 
 /// Error that can happen when parsing the JSON input.
 #[derive(Debug)]
@@ -128,10 +128,10 @@ impl CgiRun for Command {
 
         // TODO: `HTTP_` env vars with the headers
 
-        let mut child = try!(self.spawn());
+        let mut child = self.spawn()?;
 
         if let Some(mut body) = request.data() {
-            try!(io::copy(&mut body, child.stdin.as_mut().unwrap()));
+            io::copy(&mut body, child.stdin.as_mut().unwrap())?;
         } else {
             return Err(CgiError::BodyAlreadyExtracted);
         }
@@ -142,9 +142,9 @@ impl CgiRun for Command {
             let mut headers = Vec::new();
             let mut status_code = 200;
             for header in stdout.by_ref().lines() {
-                let header = try!(header);
+                let header = header?;
                 if header.is_empty() { break; }
-    
+
                 let mut splits = header.splitn(2, ':');
                 let header = splits.next().unwrap();        // TODO: return Err instead?
                 let val = splits.next().unwrap();           // TODO: return Err instead?

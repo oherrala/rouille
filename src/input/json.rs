@@ -39,7 +39,7 @@ use std::fmt;
 use std::io::Error as IoError;
 use serde;
 use serde_json;
-use Request;
+use crate::Request;
 
 /// Error that can happen when parsing the JSON input.
 #[derive(Debug)]

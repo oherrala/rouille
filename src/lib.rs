@@ -78,10 +78,10 @@ pub const DEFAULT_ENCODE_SET: &percent_encoding::AsciiSet = &percent_encoding::C
     .add(b' ').add(b'"').add(b'#').add(b'<').add(b'>')
     .add(b'`').add(b'?').add(b'{').add(b'}');
 
-pub use assets::extension_to_mime;
-pub use assets::match_assets;
-pub use log::{log, log_custom};
-pub use response::{Response, ResponseBody};
+pub use crate::assets::extension_to_mime;
+pub use crate::assets::match_assets;
+pub use crate::log::{log, log_custom};
+pub use crate::response::{Response, ResponseBody};
 pub use tiny_http::ReadWrite;
 
 use std::time::Duration;
@@ -298,7 +298,7 @@ impl<F> Server<F> where F: Send + Sync + 'static + Fn(&Request) -> Response {
     pub fn new<A>(addr: A, handler: F) -> Result<Server<F>, Box<dyn Error + Send + Sync>>
         where A: ToSocketAddrs
     {
-        let server = try!(tiny_http::Server::http(addr));
+        let server = tiny_http::Server::http(addr)?;
         Ok(Server {
             server,
             executor: Executor::Threaded,
@@ -323,7 +323,7 @@ impl<F> Server<F> where F: Send + Sync + 'static + Fn(&Request) -> Response {
             certificate,
             private_key,
         };
-        let server = try!(tiny_http::Server::https(addr, ssl_config));
+        let server = tiny_http::Server::https(addr, ssl_config)?;
         Ok(Server {
             server,
             executor: Executor::Threaded,
@@ -912,7 +912,7 @@ impl<'a> Read for RequestBody<'a> {
 
 #[cfg(test)]
 mod tests {
-    use Request;
+    use crate::Request;
 
     #[test]
     fn header() {

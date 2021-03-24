@@ -11,7 +11,7 @@ use std::error;
 use std::fmt;
 use std::io::Error as IoError;
 use std::io::Read;
-use Request;
+use crate::Request;
 
 /// Error that can happen when parsing the request body as plain text.
 #[derive(Debug)]
@@ -124,7 +124,7 @@ pub fn plain_text_body_with_limit(request: &Request, limit: usize)
     };
 
     let mut out = Vec::new();
-    try!(body.take(limit.saturating_add(1) as u64).read_to_end(&mut out));
+    body.take(limit.saturating_add(1) as u64).read_to_end(&mut out)?;
     if out.len() > limit {
         return Err(PlainTextError::LimitExceeded);
     }
@@ -139,7 +139,7 @@ pub fn plain_text_body_with_limit(request: &Request, limit: usize)
 
 #[cfg(test)]
 mod test {
-    use Request;
+    use crate::Request;
     use super::plain_text_body;
     use super::plain_text_body_with_limit;
     use super::PlainTextError;
@@ -155,7 +155,7 @@ mod test {
             _ => panic!()
         }
     }
-    
+
     #[test]
     fn charset() {
         let request = Request::fake_http("GET", "/", vec![
@@ -195,7 +195,7 @@ mod test {
         let request = Request::fake_http("GET", "/", vec![
             ("Content-Type".to_owned(), "text/plain; charset=utf8".to_owned())
         ], b"test".to_vec());
-        
+
         match plain_text_body(&request) {
             Ok(ref d) if d == "test" => (),
             _ => panic!()

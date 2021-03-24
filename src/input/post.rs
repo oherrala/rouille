@@ -44,7 +44,7 @@
 //!   to parse the number from the data passed by the client. An error is produced if the client
 //!   sent a value that failed to parse or that overflows the capacity of the number.
 //! - `Option<T>`: This is equivalent to `T`, but if the field is missing or fails to parse then
-//!   the `Option` will contain `None` and no error will be produced. 
+//!   the `Option` will contain `None` and no error will be produced.
 //! - `bool`: Will be `true` if the field is present at least once and `false` if it is absent.
 //!   This is suitable to know whether a `<input type="checkbox" />` is checked or not.
 //! - `Vec<T>`: Same as `T`, except that if the client sends multiple fields with that name then
@@ -101,7 +101,7 @@
 //! `from_file` method. You should return `PostFieldError::WrongFieldType` if you're
 //! expecting a file and `from_field` was called, or vice-versa.
 
-use Request;
+use crate::Request;
 
 use std::borrow::Cow;
 use std::error;
@@ -410,14 +410,14 @@ impl DecodePostField<()> for bool {
 
 impl<T, C> DecodePostField<C> for Vec<T> where T: DecodePostField<C> {
     fn from_field(config: C, content: &str) -> Result<Self, PostFieldError> {
-        Ok(vec![try!(DecodePostField::from_field(config, content))])
+        Ok(vec![DecodePostField::from_field(config, content)?])
     }
 
     fn from_file<R>(config: C, file: R, filename: Option<&str>, mime: &str)
                     -> Result<Self, PostFieldError>
         where R: BufRead
     {
-        Ok(vec![try!(DecodePostField::from_file(config, file, filename, mime))])
+        Ok(vec![DecodePostField::from_file(config, file, filename, mime)?])
     }
 
     fn merge_multiple(mut self, mut existing: Vec<T>) -> Result<Vec<T>, PostFieldError> {
@@ -462,7 +462,7 @@ impl DecodePostField<()> for BufferedFile {
         where R: BufRead
     {
         let mut out = Vec::new();
-        try!(file.read_to_end(&mut out));
+        file.read_to_end(&mut out)?;
 
         Ok(BufferedFile {
             data: out,
@@ -499,12 +499,12 @@ macro_rules! post_input {
             match existing {
                 a @ &mut Some(_) => {
                     let extracted = a.take().unwrap();
-                    let merged = try!(extracted.merge_multiple(new));
+                    let merged = extracted.merge_multiple(new)?;
                     *a = Some(merged);
                 },
                 a @ &mut None => *a = Some(new),
             };
-            
+
             Ok(())
         }
 
@@ -520,7 +520,7 @@ macro_rules! post_input {
                     // TODO: DDoSable server if body is too large?
                     let mut out = Vec::new();       // TODO: with_capacity()?
                     if let Some(mut b) = request.data() {
-                        try!(b.read_to_end(&mut out));
+                        b.read_to_end(&mut out)?;
                     } else {
                         return Err(PostError::BodyAlreadyExtracted);
                     }
@@ -533,7 +533,7 @@ macro_rules! post_input {
                             let config = ();
                             $(
                                 let config = $config;
-                            )* 
+                            )*
 
                             let decoded = match DecodePostField::from_field(config, &value) {
                                 Ok(d) => d,
@@ -572,7 +572,7 @@ macro_rules! post_input {
                             let config = ();
                             $(
                                 let config = $config;
-                            )* 
+                            )*
 
                             if multipart_entry.is_text() {
                                 let mut text = String::new();
@@ -626,7 +626,7 @@ macro_rules! post_input {
                             let config = ();
                             $(
                                 let config = $config;
-                            )* 
+                            )*
 
                             match DecodePostField::not_found(config) {
                                 Ok(d) => d,
@@ -660,7 +660,7 @@ pub fn raw_urlencoded_post_input(request: &Request) -> Result<Vec<(String, Strin
         // TODO: DDoSable server if body is too large?
         let mut out = Vec::new();       // TODO: with_capacity()?
         if let Some(mut b) = request.data() {
-            try!(b.read_to_end(&mut out));
+            b.read_to_end(&mut out)?;
         } else {
             return Err(PostError::BodyAlreadyExtracted);
         }
@@ -672,9 +672,9 @@ pub fn raw_urlencoded_post_input(request: &Request) -> Result<Vec<(String, Strin
 
 #[cfg(test)]
 mod tests {
-    use Request;
-    use input::post::PostError;
-    use input::post::PostFieldError;
+    use crate::Request;
+    use crate::input::post::PostError;
+    use crate::input::post::PostFieldError;
 
     #[test]
     fn basic_int() {

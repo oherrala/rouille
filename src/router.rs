@@ -356,7 +356,7 @@ macro_rules! router {
 
 #[cfg(test)]
 mod tests {
-    use Request;
+    use crate::Request;
 
     // -- old-style tests --
     #[test]
@@ -601,4 +601,3 @@ mod tests {
         );
     }
 }
-

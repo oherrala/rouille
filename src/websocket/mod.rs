@@ -77,8 +77,8 @@ use std::sync::mpsc;
 use std::vec::IntoIter as VecIntoIter;
 use sha1::Sha1;
 
-use Request;
-use Response;
+use crate::Request;
+use crate::Response;
 
 mod low_level;
 mod websocket;

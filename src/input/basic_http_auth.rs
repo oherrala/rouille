@@ -18,7 +18,7 @@
 //!   [the `plain_text_body` function](fn.plain_text_body.html).
 
 use base64;
-use Request;
+use crate::Request;
 
 /// Credentials returned by `basic_http_auth`.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -88,7 +88,7 @@ pub fn basic_http_auth(request: &Request) -> Option<HttpAuthCredentials> {
 
 #[cfg(test)]
 mod test {
-    use Request;
+    use crate::Request;
     use super::HttpAuthCredentials;
     use super::basic_http_auth;
 
