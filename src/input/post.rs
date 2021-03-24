@@ -566,7 +566,7 @@ macro_rules! post_input {
                     },
                 };
 
-                while let Some(mut multipart_entry) = multipart.next() {
+                while let Some(mut multipart_entry) = multipart.next_entry() {
                     $(
                         if multipart_entry.headers.name.as_ref() == stringify!($field) {
                             let config = ();

@@ -8,10 +8,10 @@
 // according to those terms.
 
 //! Analyze the request's headers and body.
-//! 
+//!
 //! This module provides functions and sub-modules that allow you to easily analyze or parse the
 //! request's headers and body.
-//! 
+//!
 //! - In order to parse JSON, see [the `json` module](json/input.html).
 //! - In order to parse input from HTML forms, see [the `post` module](post/input.html).
 //! - In order to read a plain text body, see
@@ -39,10 +39,7 @@ use crate::Request;
 // TODO: should an error be returned if the header is malformed?
 // TODO: be less tolerent to what is accepted?
 pub fn cookies(request: &Request) -> CookiesIter {
-    let header = match request.header("Cookie") {
-        None => "",
-        Some(h) => h,
-    };
+    let header = request.header("Cookie").unwrap_or("");
 
     CookiesIter {
         iter: header.split(';')
@@ -65,7 +62,7 @@ impl<'a> Iterator for CookiesIter<'a> {
                 Some(c) => c,
                 None => return None
             };
-            
+
             let mut splits = cookie.splitn(2, |c| c == '=');
             let key = match splits.next() { None => continue, Some(v) => v };
             let value = match splits.next() { None => continue, Some(v) => v };

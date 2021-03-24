@@ -10,9 +10,6 @@
 use std::fs;
 use std::path::Path;
 
-use filetime;
-use time;
-
 use crate::Request;
 use crate::Response;
 
@@ -88,7 +85,7 @@ pub fn match_assets<P: ?Sized>(request: &Request, path: &P) -> Response
 
     // The potential location of the file on the disk.
     let potential_file = {
-        let mut path = path.to_path_buf();
+        let mut path = path.clone();
         for component in request.url().split('/') {
             path.push(component);
         }

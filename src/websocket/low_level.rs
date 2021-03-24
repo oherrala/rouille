@@ -113,6 +113,7 @@ pub struct ElementsIter<'a> {
 impl<'a> Iterator for ElementsIter<'a> {
     type Item = Element<'a>;
 
+    #[allow(clippy::many_single_char_names)]
     fn next(&mut self) -> Option<Element<'a>> {
         if self.data.is_empty() {
             return None;
@@ -165,7 +166,7 @@ impl<'a> Iterator for ElementsIter<'a> {
                         let length = {
                             let a = u64::from(*mask_iter.next().unwrap());
                             let b = u64::from(*mask_iter.next().unwrap());
-                            (a << 8) | (b << 0)
+                            (a << 8) | b
                         };
 
                         let mask = {
@@ -173,7 +174,7 @@ impl<'a> Iterator for ElementsIter<'a> {
                             let b = u32::from(*mask_iter.next().unwrap());
                             let c = u32::from(*mask_iter.next().unwrap());
                             let d = u32::from(*mask_iter.next().unwrap());
-                            (a << 24) | (b << 16) | (c << 8) | (d << 0)
+                            (a << 24) | (b << 16) | (c << 8) | d
                         };
 
                         (length, mask)
@@ -205,7 +206,7 @@ impl<'a> Iterator for ElementsIter<'a> {
                             }
 
                             (a << 56) | (b << 48) | (c << 40) | (d << 32) |
-                                (e << 24) | (f << 16) | (g << 8) | (h << 0)
+                                (e << 24) | (f << 16) | (g << 8) | h
                         };
 
                         let mask = {
@@ -213,7 +214,7 @@ impl<'a> Iterator for ElementsIter<'a> {
                             let b = u32::from(*mask_iter.next().unwrap());
                             let c = u32::from(*mask_iter.next().unwrap());
                             let d = u32::from(*mask_iter.next().unwrap());
-                            (a << 24) | (b << 16) | (c << 8) | (d << 0)
+                            (a << 24) | (b << 16) | (c << 8) | d
                         };
 
                         (length, mask)
@@ -226,7 +227,7 @@ impl<'a> Iterator for ElementsIter<'a> {
                             let b = u32::from(*mask_iter.next().unwrap());
                             let c = u32::from(*mask_iter.next().unwrap());
                             let d = u32::from(*mask_iter.next().unwrap());
-                            (a << 24) | (b << 16) | (c << 8) | (d << 0)
+                            (a << 24) | (b << 16) | (c << 8) | d
                         };
 
                         (u64::from(n), mask)
@@ -310,7 +311,7 @@ impl<'a> Iterator for Data<'a> {
         }
 
         let byte = self.data[0];
-        let mask = ((self.mask >> (3 - self.offset) * 8) & 0xff) as u8;
+        let mask = ((self.mask >> ((3 - self.offset) * 8)) & 0xff) as u8;
         let decoded = byte ^ mask;
 
         self.data = &self.data[1..];

@@ -69,7 +69,6 @@ pub use self::websocket::Message;
 pub use self::websocket::SendError;
 pub use self::websocket::Websocket;
 
-use base64;
 use std::borrow::Cow;
 use std::error;
 use std::fmt;
@@ -81,6 +80,8 @@ use crate::Request;
 use crate::Response;
 
 mod low_level;
+
+#[allow(clippy::module_inception)]
 mod websocket;
 
 /// Error that can happen when attempting to start websocket.

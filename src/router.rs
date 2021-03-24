@@ -232,6 +232,7 @@ macro_rules! router {
     // Recursively pull out and bind a url param
     (__bind_param $request_url:ident, $url_params:expr, $handle:expr, $param:ident: $param_type:ty ; $($params:tt: $param_types:tt)*) => {
         {
+            #[allow(unused_variables)]
             let $param = match $url_params.$param {
                 Some(p) => p,
                 None => {

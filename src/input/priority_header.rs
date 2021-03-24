@@ -8,7 +8,6 @@
 // according to those terms.
 
 use std::f32;
-use std::str::FromStr;
 use std::str::Split;
 
 /// Returns the preferred value amongst a priority header.
@@ -56,23 +55,15 @@ pub fn priority_header_preferred<'a, I>(input: &'a str, elements: I) -> Option<u
                 let right = parts.next();
                 (left, right)
             };
-            
-            if req_elem_left == Some("*") || header_elem_left == Some("*") {
-                if req_elem_right == header_elem_right || req_elem_right == Some("*") ||
-                    header_elem_right == Some("*")
-                {
-                    result = (Some(index), prio);
-                    continue;
-                }
+
+            if (req_elem_left == Some("*") || header_elem_left == Some("*")) && (req_elem_right == header_elem_right || req_elem_right == Some("*") || header_elem_right == Some("*")) {
+                result = (Some(index), prio);
+                continue;
             }
 
-            if req_elem_right == Some("*") || header_elem_right == Some("*") {
-                if req_elem_left == header_elem_left || req_elem_left == Some("*") ||
-                    header_elem_left == Some("*")
-                {
-                    result = (Some(index), prio);
-                    continue;
-                }
+            if (req_elem_right == Some("*") || header_elem_right == Some("*")) && (req_elem_left == header_elem_left || req_elem_left == Some("*") || header_elem_left == Some("*")) {
+                result = (Some(index), prio);
+                continue;
             }
         }
     }
@@ -129,9 +120,10 @@ impl<'a> Iterator for PriorityHeaderIter<'a> {
 
             for p in params {
                 let trimmed_p = p.trim_start();
-                if trimmed_p.starts_with("q=") {
-                    if let Ok(val) = FromStr::from_str(&trimmed_p[2..].trim()) {
-                        value = val; break;
+                if let Some(val) = trimmed_p.strip_prefix("q=") {
+                    if let Ok(val) = val.trim().parse() {
+                        value = val;
+                        break;
                     }
                 }
             }

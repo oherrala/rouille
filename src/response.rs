@@ -13,9 +13,7 @@ use std::io::Cursor;
 use std::io::Read;
 use std::fs::File;
 use std::fmt;
-use serde;
-use serde_json;
-use percent_encoding;
+
 use crate::Request;
 use crate::Upgrade;
 

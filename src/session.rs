@@ -36,7 +36,6 @@
 use std::borrow::Cow;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
-use rand;
 use rand::Rng;
 use rand::distributions::Alphanumeric;
 
@@ -47,9 +46,9 @@ use crate::input;
 pub fn session<'r, F>(request: &'r Request, cookie_name: &str, timeout_s: u64, inner: F) -> Response
     where F: FnOnce(&Session<'r>) -> Response
 {
-    let mut cookie = input::cookies(request).into_iter();
-    let cookie = cookie.find(|&(ref k, _)| k == &cookie_name);
-    let cookie = cookie.map(|(_, v)| v);
+    let cookie = input::cookies(request)
+        .find(|&(ref k, _)| k == &cookie_name)
+        .map(|(_, v)| v);
 
     let session = if let Some(cookie) = cookie {
         Session {
@@ -117,8 +116,6 @@ pub fn generate_session_id() -> String {
     // 5e+114 possibilities is reasonable.
     rand::thread_rng()
                       .sample_iter(&Alphanumeric)
-                      .filter(|&c| (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-                                   (c >= '0' && c <= '9'))
                       .take(64).collect::<String>()
 }
 

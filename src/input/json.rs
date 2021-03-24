@@ -37,8 +37,7 @@
 use std::error;
 use std::fmt;
 use std::io::Error as IoError;
-use serde;
-use serde_json;
+
 use crate::Request;
 
 /// Error that can happen when parsing the JSON input.

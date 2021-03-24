@@ -132,9 +132,7 @@ impl Iterator for Websocket {
     fn next(&mut self) -> Option<Message> {
         loop {
             // If the socket is `None`, the connection has been closed.
-            if self.socket.is_none() {
-                return None;
-            }
+            self.socket.as_ref()?;
 
             // There may be some messages waiting to be processed.
             if !self.messages_in_queue.is_empty() {
@@ -326,7 +324,7 @@ fn send<W: Write>(data: &[u8], mut dest: W, opcode: u8) -> io::Result<()> {
         let len5 = (len >> 24) as u8;
         let len6 = (len >> 16) as u8;
         let len7 = (len >> 8) as u8;
-        let len8 = (len >> 0) as u8;
+        let len8 = len as u8;
         dest.write_all(&[len1, len2, len3, len4, len5, len6, len7, len8])?;
 
     } else if data.len() >= 126 {

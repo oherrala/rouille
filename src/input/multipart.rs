@@ -78,7 +78,7 @@ pub struct Multipart<'a> {
 }
 
 impl<'a> Multipart<'a> {
-    pub fn next(&mut self) -> Option<MultipartField<&mut InnerMultipart<RequestBody<'a>>>> {
+    pub fn next_entry(&mut self) -> Option<MultipartField<&mut InnerMultipart<RequestBody<'a>>>> {
         self.inner.read_entry().unwrap_or(None)
     }
 }

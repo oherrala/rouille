@@ -12,8 +12,6 @@ use std::panic;
 use std::time::Duration;
 use std::time::Instant;
 
-use chrono;
-
 use crate::Request;
 use crate::Response;
 
