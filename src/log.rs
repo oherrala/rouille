@@ -37,12 +37,17 @@ use crate::Response;
 /// }
 /// ```
 pub fn log<W, F>(rq: &Request, mut output: W, f: F) -> Response
-    where W: Write,
-          F: FnOnce() -> Response
+where
+    W: Write,
+    F: FnOnce() -> Response,
 {
     let start_instant = Instant::now();
-    let rq_line = format!("{} UTC - {} {}", chrono::Utc::now().format("%Y-%m-%d %H:%M:%S%.6f"),
-                                            rq.method(), rq.raw_url());
+    let rq_line = format!(
+        "{} UTC - {} {}",
+        chrono::Utc::now().format("%Y-%m-%d %H:%M:%S%.6f"),
+        rq.method(),
+        rq.raw_url()
+    );
 
     // Calling the handler and catching potential panics.
     // Note that this we always resume unwinding afterwards, we can ignore the small panic-safety
@@ -53,9 +58,13 @@ pub fn log<W, F>(rq: &Request, mut output: W, f: F) -> Response
 
     match response {
         Ok(response) => {
-            let _ = writeln!(output, "{} - {} - {}", rq_line, elapsed_time, response.status_code);
+            let _ = writeln!(
+                output,
+                "{} - {} - {}",
+                rq_line, elapsed_time, response.status_code
+            );
             response
-        },
+        }
         Err(payload) => {
             // There is probably no point in printing the payload, as this is done by the panic
             // handler.
@@ -64,7 +73,6 @@ pub fn log<W, F>(rq: &Request, mut output: W, f: F) -> Response
         }
     }
 }
-
 
 /// Calls custom logging functions after processing a request.
 ///
@@ -97,9 +105,10 @@ pub fn log<W, F>(rq: &Request, mut output: W, f: F) -> Response
 /// # fn main() { }
 /// ```
 pub fn log_custom<L, E, F>(req: &Request, log_ok_f: L, log_err_f: E, handler: F) -> Response
-    where L: Fn(&Request, &Response, Duration),
-          E: Fn(&Request, Duration),
-          F: FnOnce() -> Response
+where
+    L: Fn(&Request, &Response, Duration),
+    E: Fn(&Request, Duration),
+    F: FnOnce() -> Response,
 {
     let start_instant = Instant::now();
 
@@ -113,7 +122,7 @@ pub fn log_custom<L, E, F>(req: &Request, log_ok_f: L, log_err_f: E, handler: F)
         Ok(response) => {
             log_ok_f(req, &response, elapsed);
             response
-        },
+        }
         Err(payload) => {
             log_err_f(req, elapsed);
             // The panic handler will print the payload contents
@@ -121,7 +130,6 @@ pub fn log_custom<L, E, F>(req: &Request, log_ok_f: L, log_err_f: E, handler: F)
         }
     }
 }
-
 
 fn format_time(duration: Duration) -> String {
     let secs_part = match duration.as_secs().checked_mul(1_000_000_000) {

@@ -74,7 +74,7 @@ impl error::Error for JsonError {
         match *self {
             JsonError::IoError(ref e) => Some(e),
             JsonError::ParseError(ref e) => Some(e),
-            _ => None
+            _ => None,
         }
     }
 }
@@ -83,18 +83,12 @@ impl fmt::Display for JsonError {
     #[inline]
     fn fmt(&self, fmt: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         let description = match *self {
-            JsonError::BodyAlreadyExtracted => {
-                "the body of the request was already extracted"
-            },
-            JsonError::WrongContentType => {
-                "the request didn't have a JSON content type"
-            },
+            JsonError::BodyAlreadyExtracted => "the body of the request was already extracted",
+            JsonError::WrongContentType => "the request didn't have a JSON content type",
             JsonError::IoError(_) => {
                 "could not read the body from the request, or could not execute the CGI program"
-            },
-            JsonError::ParseError(_) => {
-                "error while parsing the JSON body"
-            },
+            }
+            JsonError::ParseError(_) => "error while parsing the JSON body",
         };
 
         write!(fmt, "{}", description)
@@ -126,7 +120,10 @@ impl fmt::Display for JsonError {
 /// }
 /// ```
 ///
-pub fn json_input<O>(request: &Request) -> Result<O, JsonError> where O: serde::de::DeserializeOwned {
+pub fn json_input<O>(request: &Request) -> Result<O, JsonError>
+where
+    O: serde::de::DeserializeOwned,
+{
     // TODO: add an optional bytes limit
 
     if let Some(header) = request.header("Content-Type") {

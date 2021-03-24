@@ -33,18 +33,19 @@
 //! }
 //! ```
 
+use rand::distributions::Alphanumeric;
+use rand::Rng;
 use std::borrow::Cow;
 use std::sync::atomic::AtomicBool;
 use std::sync::atomic::Ordering;
-use rand::Rng;
-use rand::distributions::Alphanumeric;
 
+use crate::input;
 use crate::Request;
 use crate::Response;
-use crate::input;
 
 pub fn session<'r, F>(request: &'r Request, cookie_name: &str, timeout_s: u64, inner: F) -> Response
-    where F: FnOnce(&Session<'r>) -> Response
+where
+    F: FnOnce(&Session<'r>) -> Response,
 {
     let cookie = input::cookies(request)
         .find(|&(ref k, _)| k == &cookie_name)
@@ -66,12 +67,17 @@ pub fn session<'r, F>(request: &'r Request, cookie_name: &str, timeout_s: u64, i
 
     let mut response = inner(&session);
 
-    if session.key_was_retreived.load(Ordering::Relaxed) {       // TODO: use `get_mut()`
+    if session.key_was_retreived.load(Ordering::Relaxed) {
+        // TODO: use `get_mut()`
         // FIXME: correct interactions with existing headers
         // TODO: allow setting domain
-        let header_value = format!("{}={}; Max-Age={}; Path=/; HttpOnly",
-                                    cookie_name, session.key, timeout_s);
-        response.headers.push(("Set-Cookie".into(), header_value.into()));
+        let header_value = format!(
+            "{}={}; Max-Age={}; Path=/; HttpOnly",
+            cookie_name, session.key, timeout_s
+        );
+        response
+            .headers
+            .push(("Set-Cookie".into(), header_value.into()));
     }
 
     response
@@ -115,8 +121,9 @@ impl<'r> Session<'r> {
 pub fn generate_session_id() -> String {
     // 5e+114 possibilities is reasonable.
     rand::thread_rng()
-                      .sample_iter(&Alphanumeric)
-                      .take(64).collect::<String>()
+        .sample_iter(&Alphanumeric)
+        .take(64)
+        .collect::<String>()
 }
 
 #[test]

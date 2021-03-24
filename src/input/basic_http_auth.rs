@@ -63,23 +63,37 @@ pub fn basic_http_auth(request: &Request) -> Option<HttpAuthCredentials> {
     };
 
     let mut split = header.splitn(2, |c| c == ' ');
-    let authtype = match split.next() { None => return None, Some(t) => t };
+    let authtype = match split.next() {
+        None => return None,
+        Some(t) => t,
+    };
 
     if authtype != "Basic" {
         return None;
     }
 
     let authvalue = match split.next().and_then(|val| base64::decode(val).ok()) {
-        Some(v) => v, None => return None
+        Some(v) => v,
+        None => return None,
     };
 
     let mut split = authvalue.splitn(2, |&c| c == b':');
 
-    let login = match split.next().map(Vec::from).and_then(|l| String::from_utf8(l).ok()) {
-        Some(l) => l, None => return None
+    let login = match split
+        .next()
+        .map(Vec::from)
+        .and_then(|l| String::from_utf8(l).ok())
+    {
+        Some(l) => l,
+        None => return None,
     };
-    let password = match split.next().map(Vec::from).and_then(|p| String::from_utf8(p).ok()) {
-        Some(p) => p, None => return None
+    let password = match split
+        .next()
+        .map(Vec::from)
+        .and_then(|p| String::from_utf8(p).ok())
+    {
+        Some(p) => p,
+        None => return None,
     };
 
     Some(HttpAuthCredentials { login, password })
@@ -87,9 +101,9 @@ pub fn basic_http_auth(request: &Request) -> Option<HttpAuthCredentials> {
 
 #[cfg(test)]
 mod test {
-    use crate::Request;
-    use super::HttpAuthCredentials;
     use super::basic_http_auth;
+    use super::HttpAuthCredentials;
+    use crate::Request;
 
     #[test]
     fn basic_http_auth_no_header() {
@@ -99,29 +113,41 @@ mod test {
 
     #[test]
     fn basic_http_auth_wrong_header() {
-        let request = Request::fake_http("GET", "/",
-                                         vec![("Authorization".to_owned(),
-                                               "hello world".to_owned())],
-                                         Vec::new());
+        let request = Request::fake_http(
+            "GET",
+            "/",
+            vec![("Authorization".to_owned(), "hello world".to_owned())],
+            Vec::new(),
+        );
         assert_eq!(basic_http_auth(&request), None);
 
-        let request = Request::fake_http("GET", "/",
-                                         vec![("Authorization".to_owned(),
-                                               "Basic \0\0".to_owned())],
-                                         Vec::new());
+        let request = Request::fake_http(
+            "GET",
+            "/",
+            vec![("Authorization".to_owned(), "Basic \0\0".to_owned())],
+            Vec::new(),
+        );
         assert_eq!(basic_http_auth(&request), None);
     }
 
     #[test]
     fn basic_http_auth_ok() {
-        let request = Request::fake_http("GET", "/",
-                                         vec![("Authorization".to_owned(),
-                                               "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==".to_owned())],
-                                         Vec::new());
+        let request = Request::fake_http(
+            "GET",
+            "/",
+            vec![(
+                "Authorization".to_owned(),
+                "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==".to_owned(),
+            )],
+            Vec::new(),
+        );
 
-        assert_eq!(basic_http_auth(&request), Some(HttpAuthCredentials {
-            login: "Aladdin".to_owned(),
-            password: "open sesame".to_owned(),
-        }));
+        assert_eq!(
+            basic_http_auth(&request),
+            Some(HttpAuthCredentials {
+                login: "Aladdin".to_owned(),
+                password: "open sesame".to_owned(),
+            })
+        );
     }
 }
