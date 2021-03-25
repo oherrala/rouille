@@ -120,7 +120,7 @@ where
 
     let etag: String = (fs::metadata(&potential_file)
         .map(|meta| filetime::FileTime::from_last_modification_time(&meta).unix_seconds() as u64)
-        .unwrap_or(time::now().tm_nsec as u64)
+        .unwrap_or(chrono::Local::now().timestamp_subsec_nanos() as u64)
         ^ 0xd3f4_0305_c9f8_e911_u64)
         .to_string();
 

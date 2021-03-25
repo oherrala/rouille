@@ -122,8 +122,9 @@ pub fn generate_session_id() -> String {
     // 5e+114 possibilities is reasonable.
     rand::thread_rng()
         .sample_iter(&Alphanumeric)
+        .map(char::from)
         .take(64)
-        .collect::<String>()
+        .collect()
 }
 
 #[test]
