@@ -10,6 +10,8 @@
 //! Everything in this module is private, but is still publicly accessible from the outside
 //! because of the `try_or_400!` macro.
 
+use serde::Serialize;
+
 use std::error::Error;
 
 /// This macro assumes that the current function returns a `Response` and takes a `Result`.
@@ -18,10 +20,8 @@ use std::error::Error;
 /// # Example
 ///
 /// ```
-/// # #[macro_use] extern crate rouille;
 /// # fn main() {
-/// use rouille::Request;
-/// use rouille::Response;
+/// use rouille::{Request, Response, try_or_400, post_input};
 ///
 /// fn handle_something(request: &Request) -> Response {
 ///     let data = try_or_400!(post_input!(request, {

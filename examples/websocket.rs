@@ -7,13 +7,11 @@
 // notice may not be copied, modified, or distributed except
 // according to those terms.
 
-#[macro_use]
-extern crate rouille;
-
 use std::thread;
 
 use rouille::websocket;
 use rouille::Response;
+use rouille::{router, try_or_400};
 
 fn main() {
     // This example demonstrates how to use websockets with rouille.

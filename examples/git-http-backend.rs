@@ -7,12 +7,11 @@
 // notice may not be copied, modified, or distributed except
 // according to those terms.
 
-extern crate rouille;
-
-use rouille::cgi::CgiRun;
 use std::env;
 use std::io;
 use std::process::Command;
+
+use rouille::cgi::CgiRun;
 
 fn main() {
     // This example demonstrates how to serve a git repository with rouille.

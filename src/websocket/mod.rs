@@ -47,12 +47,10 @@
 //! # Example
 //!
 //! ```
-//! # #[macro_use] extern crate rouille;
 //! use std::sync::Mutex;
 //! use std::sync::mpsc::Receiver;
 //!
-//! use rouille::Request;
-//! use rouille::Response;
+//! use rouille::{Request, Response, try_or_400};
 //! use rouille::websocket;
 //! # fn main() {}
 //!

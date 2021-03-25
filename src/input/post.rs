@@ -12,9 +12,7 @@
 //! In order to parse the body of a request, you can use the `post_input!` macro.
 //!
 //! ```
-//! # #[macro_use] extern crate rouille;
-//! use rouille::Request;
-//! use rouille::Response;
+//! use rouille::{Request, Response, try_or_400, post_input};
 //!
 //! fn handle_request(request: &Request) -> Response {
 //!     let input = try_or_400!(post_input!(request, {
@@ -73,9 +71,7 @@
 //! Example:
 //!
 //! ```
-//! # #[macro_use] extern crate rouille;
-//! use rouille::Request;
-//! use rouille::Response;
+//! use rouille::{Request, Response, try_or_400, post_input};
 //! use rouille::input::post::BufferedFile;
 //!
 //! fn handle_request(request: &Request) -> Response {

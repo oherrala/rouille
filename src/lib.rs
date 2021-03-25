@@ -52,26 +52,8 @@
 
 #![deny(unsafe_code)]
 
-extern crate base64;
-#[cfg(feature = "brotli2")]
-extern crate brotli2;
-extern crate chrono;
-#[cfg(feature = "gzip")]
-extern crate deflate;
-extern crate filetime;
-extern crate multipart;
-extern crate rand;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate num_cpus;
-pub extern crate percent_encoding;
-extern crate serde_json;
-extern crate sha1;
-extern crate threadpool;
-extern crate time;
-extern crate tiny_http;
-pub extern crate url;
+pub use percent_encoding;
+pub use url;
 
 // https://github.com/servo/rust-url/blob/e121d8d0aafd50247de5f5310a227ecb1efe6ffe/percent_encoding/lib.rs#L126
 pub const DEFAULT_ENCODE_SET: &percent_encoding::AsciiSet = &percent_encoding::CONTROLS
@@ -141,10 +123,8 @@ macro_rules! try_or_404 {
 /// # Example
 ///
 /// ```
-/// # #[macro_use] extern crate rouille;
 /// # fn main() {
-/// use rouille::Request;
-/// use rouille::Response;
+/// use rouille::{Request, Response, post_input, try_or_400, assert_or_400};
 ///
 /// fn handle_something(request: &Request) -> Response {
 ///     let data = try_or_400!(post_input!(request, {

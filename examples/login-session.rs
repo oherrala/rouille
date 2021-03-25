@@ -1,11 +1,8 @@
-#[macro_use]
-extern crate rouille;
-
-use rouille::Request;
-use rouille::Response;
 use std::collections::HashMap;
 use std::io;
 use std::sync::Mutex;
+
+use rouille::{Request, Response, router, try_or_400, post_input};
 
 // This struct contains the data that we store on the server about each client.
 #[derive(Debug, Clone)]

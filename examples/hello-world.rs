@@ -7,8 +7,7 @@
 // notice may not be copied, modified, or distributed except
 // according to those terms.
 
-#[macro_use]
-extern crate rouille;
+use rouille::router;
 
 fn main() {
     println!("Now listening on localhost:8000");

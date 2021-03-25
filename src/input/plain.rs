@@ -79,8 +79,7 @@ impl fmt::Display for PlainTextError {
 /// # Example
 ///
 /// ```
-/// # #[macro_use] extern crate rouille;
-/// # use rouille::{Request, Response};
+/// # use rouille::{Request, Response, try_or_400};
 /// # fn main() {}
 /// fn route_handler(request: &Request) -> Response {
 ///     let text = try_or_400!(rouille::input::plain_text_body(request));

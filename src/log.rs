@@ -83,19 +83,16 @@ where
 /// # Example
 ///
 /// ```
-/// #[macro_use] extern crate log;
-/// extern crate chrono;
-/// # extern crate rouille;
 /// use rouille::{Request, Response};
 ///
 ///
 /// fn handle(request: &Request) -> Response {
 ///     let now = chrono::Utc::now().format("%Y-%m-%d %H:%M:%S%.6f");
 ///     let log_ok = |req: &Request, resp: &Response, _elap: std::time::Duration| {
-///         info!("{} {} {}", now, req.method(), req.raw_url());
+///         log::info!("{} {} {}", now, req.method(), req.raw_url());
 ///     };
 ///     let log_err = |req: &Request, _elap: std::time::Duration| {
-///         error!("{} Handler panicked: {} {}", now, req.method(), req.raw_url());
+///         log::error!("{} Handler panicked: {} {}", now, req.method(), req.raw_url());
 ///     };
 ///     rouille::log_custom(request, log_ok, log_err, || {
 ///         Response::text("hello world")

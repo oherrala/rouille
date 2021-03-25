@@ -15,9 +15,8 @@
 /// # Example
 ///
 /// ```
-/// # #[macro_use] extern crate rouille;
 /// # fn main() {
-/// use rouille::{Request, Response};
+/// use rouille::{Request, Response, find_route};
 ///
 /// fn handle_request_a(_: &Request) -> Response {
 /// # panic!()

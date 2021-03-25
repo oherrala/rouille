@@ -7,21 +7,13 @@
 // notice may not be copied, modified, or distributed except
 // according to those terms.
 
-#[macro_use]
-extern crate rouille;
-extern crate postgres;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-
 use std::sync::Mutex;
 
+use postgres::{Connection, TlsMode};
 use postgres::transaction::Transaction;
-use postgres::Connection;
-use postgres::TlsMode;
+use serde::Serialize;
 
-use rouille::Request;
-use rouille::Response;
+use rouille::{Request, Response, router, try_or_400};
 
 fn main() {
     // This example demonstrates how to connect to a database and perform queries when the client

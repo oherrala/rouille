@@ -15,10 +15,8 @@
 //! # Example
 //!
 //! ```
-//! # extern crate serde;
-//! # #[macro_use] extern crate serde_derive;
-//! # #[macro_use] extern crate rouille;
-//! # use rouille::{Request, Response};
+//! # use serde::Deserialize;
+//! # use rouille::{Request, Response, try_or_400};
 //! # fn main() {}
 //!
 //! fn route_handler(request: &Request) -> Response {
@@ -102,10 +100,8 @@ impl fmt::Display for JsonError {
 /// # Example
 ///
 /// ```
-/// # extern crate serde;
-/// # #[macro_use] extern crate serde_derive;
-/// # #[macro_use] extern crate rouille;
-/// # use rouille::{Request, Response};
+/// # use serde::Deserialize;
+/// # use rouille::{Request, Response, try_or_400};
 /// fn main() {}
 ///
 /// fn route_handler(request: &Request) -> Response {
