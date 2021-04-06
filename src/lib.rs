@@ -90,11 +90,17 @@ use std::sync::Mutex;
 use std::thread;
 use std::time::Duration;
 
-pub mod cgi;
 pub mod content_encoding;
 pub mod input;
-pub mod proxy;
 pub mod session;
+
+#[cfg(feature = "cgi")]
+pub mod cgi;
+
+#[cfg(feature = "proxy")]
+pub mod proxy;
+
+#[cfg(feature = "websocket")]
 pub mod websocket;
 
 mod assets;

@@ -17,6 +17,10 @@ brotli = ["brotli2"]
 gzip = ["deflate"]
 ssl = ["tiny_http/ssl"]
 
+cgi = []
+proxy = []
+websocket = [ "sha1" ]
+
 [dependencies]
 base64 = "0.13"
 brotli2 = { version = "0.3", optional = true }
@@ -28,12 +32,13 @@ percent-encoding = "2"
 rand = "0.8"
 serde = { version = "1", features = [ "derive" ] }
 serde_json = "1"
-sha1 = "0.6"
+sha1 = { version = "0.6", optional = true }
 tiny_http = "0.8"
 url = "2"
 threadpool = "1"
 num_cpus = "1"
 
 [dev-dependencies]
-postgres = { version = "0.19", default-features = false }
 log = "0.4"
+postgres = { version = "0.19", default-features = false }
+rouille = { path = ".", features = [ "cgi", "proxy", "websocket" ] }
